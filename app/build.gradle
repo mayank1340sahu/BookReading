@@ -50,6 +50,7 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.compose.material3:material3:1.1.2'
     var compose_version = '1.5.4'
     var hilt_version = '2.44'
     implementation platform('com.google.firebase:firebase-bom:29.0.0')
