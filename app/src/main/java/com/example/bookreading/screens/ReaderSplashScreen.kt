@@ -1,9 +1,7 @@
 package com.example.bookreading.screens
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,20 +23,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.bookreading.navigation.ReaderScreens
 import kotlinx.coroutines.delay
 
-@Preview
 @Composable
-fun ReaderSplashScreen(navController: NavController = NavController(context = LocalContext.current)) {
+fun ReaderSplashScreen(navController: NavHostController) {
     val scale = remember{
       Animatable(0f)
     }
     LaunchedEffect(key1 = true){
         scale.animateTo(targetValue = 0.9f,
-            animationSpec = tween(durationMillis = 800,
-                easing = LinearOutSlowInEasing ),
+            animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy,stiffness =Spring.StiffnessLow ),
             )
        delay(800)
+        navController.navigate(ReaderScreens.Login.name)
     }
     Column(Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
