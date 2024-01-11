@@ -53,13 +53,18 @@ fun ReaderSplashScreen(navController: NavHostController) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Book Reading",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color(0xFFD62E67)
-                )
+                ReaderLogo()
                 Text(text = "\"Reading must be a habit\"", color = Color.DarkGray)
             }
         }
     }
+}
+
+@Composable
+fun ReaderLogo() {
+    Text(
+        text = "Book Reading",
+        style = MaterialTheme.typography.headlineMedium,
+        color = Color(0xFFD62E67)
+    )
 }

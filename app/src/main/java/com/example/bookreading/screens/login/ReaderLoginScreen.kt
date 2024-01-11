@@ -2,9 +2,12 @@ package com.example.bookreading.screens.login
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -37,14 +40,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.bookreading.screens.ReaderLogo
 
 @Preview
 @Composable
 fun ReaderLoginScreen(
     navController: NavHostController = NavHostController(context = LocalContext.current)) {
-   UserForm(loading = false, isCreatedAccount = false){ email,pass ->
-       Log.d("user Form", "ReaderLoginScreen: $email,$pass")
-   }
+    Column(Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally){
+        ReaderLogo()
+        UserForm(loading = false, isCreatedAccount = false) { email, pass ->
+            Log.d("user Form", "ReaderLoginScreen: $email,$pass")
+        }
+    }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -75,7 +83,7 @@ fun UserForm(
         .height(34.dp)
         .verticalScroll(rememberScrollState())
         .background(MaterialTheme.colorScheme.background)
-    Column(Modifier.fillMaxWidth(),
+    Column(Modifier.fillMaxWidth().heightIn(0.dp,900.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
         EmailInput(emailState = email, onAction = KeyboardActions {
