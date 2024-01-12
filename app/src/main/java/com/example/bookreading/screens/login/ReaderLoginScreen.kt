@@ -2,9 +2,7 @@ package com.example.bookreading.screens.login
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -14,9 +12,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -74,7 +71,7 @@ fun UserForm(
     val passwordVisibility = rememberSaveable {
         mutableStateOf(false)
     }
-    val passwordFocusRequest = FocusRequester.Default
+    //val passwordFocusRequest = FocusRequester
 
     val keyBoardController = LocalSoftwareKeyboardController.current
 
@@ -91,11 +88,9 @@ fun UserForm(
             .heightIn(0.dp, 900.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
-        EmailInput(emailState = email, onAction = KeyboardActions {
-            passwordFocusRequest.requestFocus()
-        })
+        EmailInput(emailState = email)
         PasswordInput(passwordState = password,
-            modifier = modifier.focusRequester(passwordFocusRequest),
+            Modifier,
             labelId = "password",
             enabled = true, //Todo Change this
             passwordVisibility = passwordVisibility,
@@ -104,6 +99,9 @@ fun UserForm(
                 onDone(email.value.trim(),password.value.trim())
             }
         )
+        SubmitButton(onClick = { onDone(email.value.trim(),password.value.trim())},
+            textId = if (isCreatedAccount) "Login" else "SignUp",
+            isValid = valid )
     }
 }
 
@@ -172,13 +170,25 @@ fun PasswordInput(
        labelId = labelId, enable = enabled,
        imeAction = imeAction,
        visualTransformation = visualTransformation,
-       trailingIcon = {PasswordVisibility(passwordVisibility = passwordVisibility)})
+       trailingIcon = {PasswordVisibility(passwordVisibility = passwordVisibility)},
+       onAction = onAction)
 }
 
 @Composable
 fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
     val visible = passwordVisibility.value
     IconButton(onClick = { passwordVisibility.value = !visible }){
-       Icon(imageVector = Icons.Default.Info, contentDescription ="" )
+       Icon(imageVector = Icons.Default.Info, 
+           contentDescription ="")
+    }
+}
+
+@Composable
+fun SubmitButton (onClick : () ->Unit,
+                  textId : String,
+                  isValid : Boolean
+) {
+    Button(onClick = onClick, enabled = isValid) {
+        Text(text = textId)
     }
 }
