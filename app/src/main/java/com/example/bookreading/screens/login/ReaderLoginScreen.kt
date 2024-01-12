@@ -14,8 +14,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -42,11 +45,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.bookreading.screens.ReaderLogo
 
-@Preview
 @Composable
 fun ReaderLoginScreen(
     navController: NavHostController = NavHostController(context = LocalContext.current)) {
-    Column(Modifier.fillMaxSize(),
+    Column(Modifier,
         horizontalAlignment = Alignment.CenterHorizontally){
         ReaderLogo()
         UserForm(loading = false, isCreatedAccount = false) { email, pass ->
@@ -83,7 +85,10 @@ fun UserForm(
         .height(34.dp)
         .verticalScroll(rememberScrollState())
         .background(MaterialTheme.colorScheme.background)
-    Column(Modifier.fillMaxWidth().heightIn(0.dp,900.dp),
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .heightIn(0.dp, 900.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
         EmailInput(emailState = email, onAction = KeyboardActions {
@@ -129,7 +134,9 @@ fun InputField(
     isSingleLine : Boolean = true,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction : ImeAction,
-   onAction: KeyboardActions = KeyboardActions.Default
+   onAction: KeyboardActions = KeyboardActions.Default,
+    visualTransformation : VisualTransformation = VisualTransformation.None,
+    trailingIcon :@Composable ()->Unit = {}
 ) {
 OutlinedTextField(value = valueState.value,
     onValueChange = { valueState.value = it },
@@ -142,10 +149,11 @@ OutlinedTextField(value = valueState.value,
         enabled = enable,
     keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
     keyboardActions = onAction,
+    visualTransformation = visualTransformation,
+    trailingIcon = trailingIcon
 )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordInput(
     passwordState: MutableState<String>,
@@ -160,25 +168,17 @@ fun PasswordInput(
     else {
         PasswordVisualTransformation()
     }
-    OutlinedTextField(value = passwordState.value,
-        onValueChange = {passwordState.value = it},
-        enabled = enabled,
-        label = { Text(text = labelId)},
-        modifier = modifier
-            .padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
-        textStyle = TextStyle(fontSize = 18.sp,
-            color = MaterialTheme.colorScheme.onBackground),
-        keyboardOptions = KeyboardOptions(imeAction = imeAction, keyboardType = KeyboardType.Text),
-        singleLine = true,
-        visualTransformation = visualTransformation,
-        trailingIcon = {PasswordVisibility(passwordVisibility = passwordVisibility)}
-    )
+   InputField(valueState = passwordState,
+       labelId = labelId, enable = enabled,
+       imeAction = imeAction,
+       visualTransformation = visualTransformation,
+       trailingIcon = {PasswordVisibility(passwordVisibility = passwordVisibility)})
 }
 
 @Composable
 fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
     val visible = passwordVisibility.value
     IconButton(onClick = { passwordVisibility.value = !visible }){
-       Icons.Default.Close
+       Icon(imageVector = Icons.Default.Info, contentDescription ="" )
     }
 }
