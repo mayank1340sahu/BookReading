@@ -10,6 +10,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,7 +29,9 @@ import com.example.bookreading.screens.login.UserForm
 fun ReaderCreateAccount(
     navController: NavHostController = NavHostController(context = LocalContext.current),
     viewModel: LoginViewModel = hiltViewModel()) {
-    var showError = false
+    var showError = remember {
+        mutableStateOf(false)
+    }
     Column(
         Modifier,
         horizontalAlignment = Alignment.CenterHorizontally){
@@ -35,17 +39,16 @@ fun ReaderCreateAccount(
         Row(horizontalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 3.dp))
+                .padding(9.dp))
         { Text(text = "Please enter a valid email and at least a 6 character password") }
-
-        UserForm(loading = false, isCreatedAccount = false) { email, pass,conf ->
+        UserForm(loading = false, isCreatedAccount = false,showError = showError.value) { email, pass,conf ->
             if (pass == conf){
                 viewModel.createAccount(email, pass) {
                     navController.navigate(ReaderScreens.Home.name)
                 }
             }
             else{
-                showError = true
+                showError.value = true
             }
             Log.d("user Form", "ReaderLoginScreen: $email,$pass")
         }

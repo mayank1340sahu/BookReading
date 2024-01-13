@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -41,7 +42,7 @@ fun ReaderLoginScreen(
     Column(Modifier,
         horizontalAlignment = Alignment.CenterHorizontally){
         ReaderLogo()
-        UserForm(loading = false, isCreatedAccount = true) { email, pass,_ ->
+        UserForm(loading = false, isCreatedAccount = true, showError = false) { email, pass, _ ->
             viewModel.signIn(email,pass){
                 navController.navigate(ReaderScreens.Home.name)
             }
@@ -63,12 +64,12 @@ fun ReaderLoginScreen(
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
-@Preview
 @Composable
 fun UserForm(
-    loading : Boolean = false,
-    isCreatedAccount : Boolean = false,
-    onDone : (String,String,String) -> Unit = { _, _ ,_ ->}
+    loading: Boolean = false,
+    isCreatedAccount: Boolean = false,
+    showError: Boolean,
+    onDone: (String, String, String) -> Unit = { _, _, _ -> },
 ) {
     val email = rememberSaveable {
         mutableStateOf("")
