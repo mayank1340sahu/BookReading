@@ -16,12 +16,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
@@ -89,7 +89,7 @@ fun UserForm(
 
     val valid = rememberSaveable(email.value,password.value,confPassword.value) {
         email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty() &&
-                confPassword.value.trim().isNotEmpty() && password.value == confPassword.value
+                confPassword.value.trim().isNotEmpty()
     }
     val modifier = Modifier
         .height(34.dp)
@@ -125,6 +125,8 @@ fun UserForm(
                     keyBoardController?.hide()
                 }
             )
+            if (showError)
+            { Text(text = "password didn't match", color = Color.Red) }
         }
             SubmitButton(
                 onClick = { onDone(email.value.trim(), password.value.trim(),

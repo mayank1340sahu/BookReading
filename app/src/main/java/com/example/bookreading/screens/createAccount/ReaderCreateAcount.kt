@@ -29,7 +29,10 @@ import com.example.bookreading.screens.login.UserForm
 fun ReaderCreateAccount(
     navController: NavHostController = NavHostController(context = LocalContext.current),
     viewModel: LoginViewModel = hiltViewModel()) {
-    var showError = remember {
+    val passwordError = remember {
+        mutableStateOf(false)
+    }
+    val emailError = remember {
         mutableStateOf(false)
     }
     Column(
@@ -41,15 +44,22 @@ fun ReaderCreateAccount(
                 .fillMaxWidth()
                 .padding(9.dp))
         { Text(text = "Please enter a valid email and at least a 6 character password") }
-        UserForm(loading = false, isCreatedAccount = false,showError = showError.value) { email, pass,conf ->
-            if (pass == conf){
-                viewModel.createAccount(email, pass) {
-                    navController.navigate(ReaderScreens.Home.name)
+        UserForm(loading = false, isCreatedAccount = false,showError = passwordError.value) { email, pass,conf ->
+            if (email.contains("@gmail.com")){
+                if (pass == conf) {
+                    viewModel.createAccount(email, pass) {
+                        navController.navigate(ReaderScreens.Home.name)
+                    }
+                } else {
+                    passwordError.value = true
                 }
             }
-            else{
-                showError.value = true
+            else
+            {
+
+                emailError.value = true
             }
+
             Log.d("user Form", "ReaderLoginScreen: $email,$pass")
         }
         Row (horizontalArrangement = Arrangement.Center,
