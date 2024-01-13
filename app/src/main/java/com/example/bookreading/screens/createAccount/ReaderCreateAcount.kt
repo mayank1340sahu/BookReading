@@ -27,6 +27,7 @@ import com.example.bookreading.screens.login.UserForm
 fun ReaderCreateAccount(
     navController: NavHostController = NavHostController(context = LocalContext.current),
     viewModel: LoginViewModel = hiltViewModel()) {
+    var showError = false
     Column(
         Modifier,
         horizontalAlignment = Alignment.CenterHorizontally){
@@ -36,9 +37,15 @@ fun ReaderCreateAccount(
                 .fillMaxWidth()
                 .padding(start = 3.dp))
         { Text(text = "Please enter a valid email and at least a 6 character password") }
-        UserForm(loading = false, isCreatedAccount = false) { email, pass ->
-            viewModel.createAccount(email,pass){
-                navController.navigate(ReaderScreens.Home.name)
+
+        UserForm(loading = false, isCreatedAccount = false) { email, pass,conf ->
+            if (pass == conf){
+                viewModel.createAccount(email, pass) {
+                    navController.navigate(ReaderScreens.Home.name)
+                }
+            }
+            else{
+                showError = true
             }
             Log.d("user Form", "ReaderLoginScreen: $email,$pass")
         }

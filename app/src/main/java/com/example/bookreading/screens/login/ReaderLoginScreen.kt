@@ -41,7 +41,7 @@ fun ReaderLoginScreen(
     Column(Modifier,
         horizontalAlignment = Alignment.CenterHorizontally){
         ReaderLogo()
-        UserForm(loading = false, isCreatedAccount = true) { email, pass ->
+        UserForm(loading = false, isCreatedAccount = true) { email, pass,_ ->
             viewModel.signIn(email,pass){
                 navController.navigate(ReaderScreens.Home.name)
             }
@@ -68,7 +68,7 @@ fun ReaderLoginScreen(
 fun UserForm(
     loading : Boolean = false,
     isCreatedAccount : Boolean = false,
-    onDone : (String,String) -> Unit = { _, _ ->}
+    onDone : (String,String,String) -> Unit = { _, _ ,_ ->}
 ) {
     val email = rememberSaveable {
         mutableStateOf("")
@@ -86,8 +86,9 @@ fun UserForm(
 
     val keyBoardController = LocalSoftwareKeyboardController.current
 
-    val valid = rememberSaveable(email.value,password.value) {
-        email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
+    val valid = rememberSaveable(email.value,password.value,confPassword.value) {
+        email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty() &&
+                confPassword.value.trim().isNotEmpty() && password.value == confPassword.value
     }
     val modifier = Modifier
         .height(34.dp)
@@ -107,8 +108,6 @@ fun UserForm(
             passwordVisibility = passwordVisibility,
             onAction = KeyboardActions {
                 if (!valid) return@KeyboardActions
-                onDone(email.value.trim(),password.value.trim())
-                keyBoardController?.hide()
             }
         )
         if (!isCreatedAccount) {
@@ -119,14 +118,18 @@ fun UserForm(
                 passwordVisibility = passwordVisibility,
                 onAction = KeyboardActions {
                     if (!valid) return@KeyboardActions
-                    onDone(email.value.trim(), password.value.trim())
+                    if (password==confPassword)
+                    { onDone(email.value.trim(),password.value.trim(),
+                        confPassword.value.trim()) }
                     keyBoardController?.hide()
                 }
             )
         }
-
-        SubmitButton(onClick = { onDone(email.value.trim(),password.value.trim())},
-            textId = if (isCreatedAccount) "Login" else "SignUp",
-            isValid = valid )
+            SubmitButton(
+                onClick = { onDone(email.value.trim(), password.value.trim(),
+                    confPassword.value.trim()) },
+                textId = if (isCreatedAccount) "Login" else "SignUp",
+                isValid = valid
+            )
     }
 }
