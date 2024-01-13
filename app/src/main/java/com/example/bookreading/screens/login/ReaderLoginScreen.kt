@@ -1,17 +1,13 @@
 package com.example.bookreading.screens.login
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -68,6 +64,7 @@ fun ReaderLoginScreen(
 fun UserForm(
     loading: Boolean = false,
     isCreatedAccount: Boolean = false,
+    emailError : Boolean = false,
     showError: Boolean,
     onDone: (String, String, String) -> Unit = { _, _, _ -> },
 ) {
@@ -87,14 +84,14 @@ fun UserForm(
 
     val keyBoardController = LocalSoftwareKeyboardController.current
 
-    val valid = rememberSaveable(email.value,password.value,confPassword.value) {
-        email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty() &&
-                confPassword.value.trim().isNotEmpty()
+    val valid = if (!isCreatedAccount){
+        rememberSaveable(email.value, password.value, confPassword.value) {
+            email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty() &&
+                    confPassword.value.trim().isNotEmpty()
+        }
+    } else {
+        email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
     }
-    val modifier = Modifier
-        .height(34.dp)
-        .verticalScroll(rememberScrollState())
-        .background(MaterialTheme.colorScheme.background)
     Column(
         Modifier
             .fillMaxWidth()
@@ -102,10 +99,12 @@ fun UserForm(
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
         EmailInput(emailState = email)
+        if (emailError)
+        { Text(text = "invalid email", color = Color.Red) }
         PasswordInput(passwordState = password,
             Modifier,
             labelId = "password",
-            enabled = true, //Todo Change this
+            enabled = true,
             passwordVisibility = passwordVisibility,
             onAction = KeyboardActions {
                 if (!valid) return@KeyboardActions
@@ -115,7 +114,7 @@ fun UserForm(
             PasswordInput(passwordState = confPassword,
                 Modifier,
                 labelId = "password",
-                enabled = true, //Todo Change this
+                enabled = true,
                 passwordVisibility = passwordVisibility,
                 onAction = KeyboardActions {
                     if (!valid) return@KeyboardActions
