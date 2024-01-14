@@ -44,7 +44,9 @@ fun ReaderCreateAccount(
                 .fillMaxWidth()
                 .padding(9.dp))
         { Text(text = "Please enter a valid email and at least a 6 character password") }
-        UserForm(loading = false, isCreatedAccount = false,showError = passwordError.value) { email, pass,conf ->
+        UserForm(loading = false, isCreatedAccount = false,
+            emailError = emailError.value,
+            showError = passwordError.value) { email, pass,conf ->
             if (email.contains("@gmail.com")){
                 if (pass == conf) {
                     viewModel.createAccount(email, pass) {
@@ -52,11 +54,12 @@ fun ReaderCreateAccount(
                     }
                 } else {
                     passwordError.value = true
+                    emailError.value = false
                 }
             }
             else
             {
-
+                passwordError.value = false
                 emailError.value = true
             }
 

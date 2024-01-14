@@ -38,7 +38,8 @@ fun ReaderLoginScreen(
     Column(Modifier,
         horizontalAlignment = Alignment.CenterHorizontally){
         ReaderLogo()
-        UserForm(loading = false, isCreatedAccount = true, showError = false) { email, pass, _ ->
+        UserForm(loading = false, isCreatedAccount = true,
+            emailError = false,showError = false) { email, pass, _ ->
             viewModel.signIn(email,pass){
                 navController.navigate(ReaderScreens.Home.name)
             }
@@ -64,7 +65,7 @@ fun ReaderLoginScreen(
 fun UserForm(
     loading: Boolean = false,
     isCreatedAccount: Boolean = false,
-    emailError : Boolean = false,
+    emailError : Boolean,
     showError: Boolean,
     onDone: (String, String, String) -> Unit = { _, _, _ -> },
 ) {

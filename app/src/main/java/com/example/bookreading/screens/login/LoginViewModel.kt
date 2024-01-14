@@ -23,8 +23,9 @@ class LoginViewModel : ViewModel() {
                    .addOnCompleteListener {
                        if (it.isSuccessful) {
                            content()
+                           Log.d("SignIn", "successful signIn: ${it.result.toString()}")
                        } else {
-                           Log.d("SignIn", "signIn: $it")
+                           Log.d("SignIn", "signIn: ${it.result.toString()}")
                        }
                    }
            }
@@ -38,7 +39,7 @@ class LoginViewModel : ViewModel() {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        Log.d("CreateAccount", "createAccount: ${it.result.toString()}")
+                        Log.d("CreateAccount", "Account Created: ${it.result.toString()}")
                         content()
                     } else {
                         Log.d("CreateAccount", "createAccount: ${it.result.toString()}")
