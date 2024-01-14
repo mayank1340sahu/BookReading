@@ -38,9 +38,12 @@ fun ReaderLoginScreen(
     Column(Modifier,
         horizontalAlignment = Alignment.CenterHorizontally){
         ReaderLogo()
-        UserForm(loading = false, isCreatedAccount = true,
-            emailError = false,showError = false) { email, pass, _ ->
-            viewModel.signIn(email,pass){
+        UserForm(
+            loading = false, isCreatedAccount = true,
+            passwordError = false,
+            emailError = false, showError = false
+        ) { email, pass, _ ->
+            viewModel.signIn(email, pass) {
                 navController.navigate(ReaderScreens.Home.name)
             }
             Log.d("user Form", "ReaderLoginScreen: $email,$pass")
@@ -65,9 +68,11 @@ fun ReaderLoginScreen(
 fun UserForm(
     loading: Boolean = false,
     isCreatedAccount: Boolean = false,
-    emailError : Boolean,
+    passwordError: Boolean,
+    emailError: Boolean,
     showError: Boolean,
     onDone: (String, String, String) -> Unit = { _, _, _ -> },
+
 ) {
     val email = rememberSaveable {
         mutableStateOf("")
@@ -111,6 +116,8 @@ fun UserForm(
                 if (!valid) return@KeyboardActions
             }
         )
+        if (passwordError)
+        { Text(text = "please enter at least 6 character", color = Color.Red) }
         if (!isCreatedAccount) {
             PasswordInput(passwordState = confPassword,
                 Modifier,

@@ -29,6 +29,9 @@ import com.example.bookreading.screens.login.UserForm
 fun ReaderCreateAccount(
     navController: NavHostController = NavHostController(context = LocalContext.current),
     viewModel: LoginViewModel = hiltViewModel()) {
+    val confpasswordError = remember {
+        mutableStateOf(false)
+    }
     val passwordError = remember {
         mutableStateOf(false)
     }
@@ -45,25 +48,35 @@ fun ReaderCreateAccount(
                 .padding(9.dp))
         { Text(text = "Please enter a valid email and at least a 6 character password") }
         UserForm(loading = false, isCreatedAccount = false,
+            passwordError = passwordError.value,
             emailError = emailError.value,
-            showError = passwordError.value) { email, pass,conf ->
+            showError = confpasswordError.value) { email, pass,conf ->
             if (email.contains("@gmail.com")){
-                if (pass == conf) {
-                    viewModel.createAccount(email, pass) {
-                        navController.navigate(ReaderScreens.Home.name)
+               if (pass.indexOf(pass.last())>=5) {
+                    if (pass == conf) {
+                        viewModel.createAccount(email, pass) {
+                            navController.navigate(ReaderScreens.Home.name)
+                        }
+                    } else {
+                        confpasswordError.value = true
+                        emailError.value = false
+                        passwordError.value = false
                     }
-                } else {
-                    passwordError.value = true
-                    emailError.value = false
                 }
+                else{
+                    passwordError.value = true
+                   emailError.value = false
+                   confpasswordError.value = false
+               }
             }
             else
             {
                 passwordError.value = false
                 emailError.value = true
+                confpasswordError.value = false
             }
 
-            Log.d("user Form", "ReaderLoginScreen: $email,$pass")
+            Log.d("user Form", "ReaderLoginScreen: $email,$pass,$conf")
         }
         Row (horizontalArrangement = Arrangement.Center,
             modifier = Modifier
