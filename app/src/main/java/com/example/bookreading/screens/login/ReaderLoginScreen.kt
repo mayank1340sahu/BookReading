@@ -41,13 +41,12 @@ fun ReaderLoginScreen(
         UserForm(
             loading = false, isCreatedAccount = true,
             passwordError = false,
-            emailError = false, showError = false
-        ) { email, pass, _ ->
-            viewModel.signIn(email, pass) {
-                navController.navigate(ReaderScreens.Home.name)
-            }
-            Log.d("user Form", "ReaderLoginScreen: $email,$pass")
-        }
+            emailError = false, showError = false ) { email, pass, _ ->
+                viewModel.signIn(email, pass) {
+                    navController.navigate(ReaderScreens.Home.name)
+                }
+                Log.d("user Form", "ReaderLoginScreen: $email,$pass")
+                }
         Row (horizontalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
@@ -73,7 +72,8 @@ fun UserForm(
     showError: Boolean,
     onDone: (String, String, String) -> Unit = { _, _, _ -> },
 
-) {
+
+    ) {
     val email = rememberSaveable {
         mutableStateOf("")
     }
@@ -134,6 +134,7 @@ fun UserForm(
             )
             if (showError)
             { Text(text = "password didn't match", color = Color.Red) }
+
         }
             SubmitButton(
                 onClick = { onDone(email.value.trim(), password.value.trim(),
