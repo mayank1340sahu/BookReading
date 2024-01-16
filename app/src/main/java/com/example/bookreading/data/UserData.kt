@@ -1,12 +1,12 @@
 package com.example.bookreading.data
 
 data class UserData(
-    var userId : String,
+    var userId: String,
     var display: String,
-    var avatarUrl : String,
-    var quote : String,
-    var profession : String,
-    var id : Int
+    var avatarUrl: String,
+    var quote: String,
+    var profession: String,
+    var id: Int?
 ) {
     fun toMap(): MutableMap<String, Any> {
         return mutableMapOf(

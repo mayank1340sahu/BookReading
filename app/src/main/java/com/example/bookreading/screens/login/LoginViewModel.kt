@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bookreading.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -40,9 +41,11 @@ class LoginViewModel : ViewModel() {
     }
     private fun createUser(displayName : String?){
         val userId = auth.currentUser?.uid
-        val user = mutableMapOf<String,Any>()
-        user["user_Id"] = userId.toString()
-        user["display_name"] = displayName.toString()
+        val user = UserData(
+            userId = userId.toString(),
+            display = displayName.toString(),
+            avatarUrl = "", quote = "quote",
+            id = null, profession = "Android Developer").toMap()
         fireStore.collection("users").add(user)
     }
 
