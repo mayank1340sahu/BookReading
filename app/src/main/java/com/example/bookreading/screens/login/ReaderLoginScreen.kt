@@ -40,6 +40,7 @@ fun ReaderLoginScreen(
         ReaderLogo()
         UserForm(
             loading = false, isCreatedAccount = true,
+            alreadyExist = false,
             passwordError = false,
             emailError = false, showError = false ) { email, pass, _ ->
                 viewModel.signIn(email, pass) {
@@ -66,6 +67,7 @@ fun ReaderLoginScreen(
 @Composable
 fun UserForm(
     loading: Boolean = false,
+    alreadyExist : Boolean,
     isCreatedAccount: Boolean = false,
     passwordError: Boolean,
     emailError: Boolean,
@@ -142,5 +144,9 @@ fun UserForm(
                 textId = if (isCreatedAccount) "Login" else "SignUp",
                 isValid = valid
             )
+        if (alreadyExist){
+            Text(text = "Account already exist,please login!",
+                modifier = Modifier.padding(top =10.dp ))
+        }
     }
 }

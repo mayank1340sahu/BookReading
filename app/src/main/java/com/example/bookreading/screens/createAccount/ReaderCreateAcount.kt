@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -38,58 +39,87 @@ fun ReaderCreateAccount(
     val emailError = remember {
         mutableStateOf(false)
     }
-    Column(
-        Modifier,
-        horizontalAlignment = Alignment.CenterHorizontally){
-        ReaderLogo()
-        Row(horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(9.dp))
-        { Text(text = "Please enter a valid email and at least a 6 character password") }
-        UserForm(loading = false, isCreatedAccount = false,
-            passwordError = passwordError.value,
-            emailError = emailError.value,
-            showError = confPasswordError.value) { email, pass, conf ->
-            if (email.contains("@gmail.com")){
-               if (pass.indexOf(pass.last())>=5) {
-                    if (pass == conf) {
-                        viewModel.createAccount(email, pass) {
-                            navController.navigate(ReaderScreens.Home.name)
-                        }
-                    }
-                    else {
-                        confPasswordError.value = true
-                        emailError.value = false
-                        passwordError.value = false
-                    }
-                }
-                else{
-                    passwordError.value = true
-                   emailError.value = false
-                   confPasswordError.value = false
-               }
-            }
-            else
-            {
-                passwordError.value = false
-                emailError.value = true
-                confPasswordError.value = false
-            }
 
-            Log.d("user Form", "ReaderLoginScreen: $email,$pass,$conf")
-        }
-        Row (horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)){
-            Text(text = "Already Account?",
-                Modifier.padding(top = 12.dp),
-                style = MaterialTheme.typography.bodyLarge)
-            TextButton(onClick = {navController.navigate(ReaderScreens.Login.name)}) {
-                Text(text = "Login",
-                    style = MaterialTheme.typography.bodyLarge)
+    val alreadyExist = remember {
+        mutableStateOf(false)
+    }
+    val loading = remember {
+        mutableStateOf(false)
+    }
+    if (!loading.value){
+        Column(
+            Modifier,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            ReaderLogo()
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(9.dp)
+            )
+            { Text(text = "Please enter a valid email and at least a 6 character password") }
+            UserForm(
+                loading = false, isCreatedAccount = false,
+                passwordError = passwordError.value,
+                alreadyExist = alreadyExist.value,
+                emailError = emailError.value,
+                showError = confPasswordError.value
+            ) { email, pass, conf ->
+                if (email.contains("@")) {
+                    if (pass.indexOf(pass.last()) >= 5) {
+                        if (pass == conf) {
+                            viewModel.createAccount(email, pass, content = {
+                                loading.value = it
+                                navController.navigate(ReaderScreens.Home.name)
+                            }) {
+                                confPasswordError.value = false
+                                emailError.value = false
+                                passwordError.value = false
+                                alreadyExist.value = true
+                            }
+                        } else {
+                            confPasswordError.value = true
+                            emailError.value = false
+                            passwordError.value = false
+                            alreadyExist.value = false
+                        }
+                    } else {
+                        passwordError.value = true
+                        emailError.value = false
+                        confPasswordError.value = false
+                        alreadyExist.value = false
+                    }
+                } else {
+                    passwordError.value = false
+                    emailError.value = true
+                    confPasswordError.value = false
+                    alreadyExist.value = false
+                }
+
+                Log.d("user Form", "ReaderLoginScreen: $email,$pass,$conf")
+            }
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = "Already Account?",
+                    Modifier.padding(top = 12.dp),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                TextButton(onClick = { navController.navigate(ReaderScreens.Login.name) }) {
+                    Text(
+                        text = "Login",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
             }
         }
+    }
+    else{
+        CircularProgressIndicator()
     }
 }
