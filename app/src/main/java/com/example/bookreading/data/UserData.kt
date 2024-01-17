@@ -11,7 +11,7 @@ data class UserData(
     fun toMap(): MutableMap<String, Any> {
         return mutableMapOf(
             "user_Id" to this.userId,
-            "display" to this.display,
+            "display_name" to this.display,
             "avatarUrl" to this.avatarUrl,
             "quote" to this.quote,
             "profession" to this.profession,

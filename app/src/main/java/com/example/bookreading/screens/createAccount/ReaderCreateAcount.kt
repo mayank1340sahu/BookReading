@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -60,17 +62,19 @@ fun ReaderCreateAccount(
             )
             { Text(text = "Please enter a valid email and at least a 6 character password") }
             UserForm(
-                loading = false, isCreatedAccount = false,
+                alreadyExist = alreadyExist.value, isCreatedAccount = false,
                 passwordError = passwordError.value,
-                alreadyExist = alreadyExist.value,
                 emailError = emailError.value,
                 showError = confPasswordError.value
             ) { email, pass, conf ->
                 if (email.contains("@")) {
                     if (pass.indexOf(pass.last()) >= 5) {
                         if (pass == conf) {
-                            viewModel.createAccount(email, pass, content = {
-                                loading.value = it
+                            viewModel.createAccount(email, pass,
+                                loading = {
+                                            loading.value = it
+                            },
+                                content = {
                                 navController.navigate(ReaderScreens.Home.name)
                             }) {
                                 confPasswordError.value = false
@@ -120,6 +124,9 @@ fun ReaderCreateAccount(
         }
     }
     else{
-        CircularProgressIndicator()
+       Column(verticalArrangement = Arrangement.Center,
+           horizontalAlignment = Alignment.CenterHorizontally,
+           modifier = Modifier.fillMaxSize())
+       { CircularProgressIndicator(modifier = Modifier.size(300.dp)) }
     }
 }

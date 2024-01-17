@@ -21,7 +21,8 @@ class LoginViewModel : ViewModel() {
 
     private val collectionRef = fireStore.collection("users")
 
-   private fun check(email: String?, content : () -> Unit, elseContent: () -> Unit) {
+   private fun check(email: String, content : () -> Unit, elseContent: () -> Unit) {
+       Log.d("check function", "check: $email")
         collectionRef.whereEqualTo("display_name",email).get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
@@ -49,44 +50,59 @@ class LoginViewModel : ViewModel() {
         fireStore.collection("users").add(user)
     }
 
-    private val loading : LiveData<Boolean> =_loading
+     val oading : LiveData<Boolean> =_loading
      fun createAccount(
          email: String,
          password: String,
-         content: (bool : Boolean) -> Unit,
+         loading : (bool : Boolean) -> Unit,
+         content: () -> Unit,
          onExist: () -> Unit
      ){
        viewModelScope.launch {
 
           if (_loading.value == false) {
               _loading.value = true
+              loading(oading.value!!)
               check(email = email.split("@")[0],content = {
                   auth.createUserWithEmailAndPassword(email, password)
                       .addOnCompleteListener {
                           if (it.isSuccessful) {
                               val displayName = it.result.user?.email?.split("@")?.get(0)
                               createUser(displayName)
-                              content(_loading.value!!)
+                              content()
                               Log.d("SignIn", "successful signIn: ${it.result}")
                           } else {
                               Log.d("SignIn", "signIn: ${it.result}")
                           }
-                          _loading.value = false
                       }
-              }) { onExist() }
+              }, elseContent = { onExist() })
+              _loading.value = false
+              loading(oading.value!!)
+              Log.d("CreateAccount Function", "createAccount: ${_loading.value}")
           }
        }
      }
-    fun signIn(email: String,password: String,content : () -> Unit){
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        Log.d("CreateAccount", "Account Created: ${it.result}")
-                        content()
-                    } else {
-                        Log.d("CreateAccount", "createAccount: ${it.result}")
+    fun signIn(email: String,
+               password: String,
+               loading : (bool : Boolean) -> Unit,
+               content: () -> Unit,
+               onExist: () -> Unit) {
+        if (_loading.value == false) {
+            _loading.value = true
+            loading(_loading.value!!)
+            check(email = email.split("@")[0], content = {onExist()},
+                elseContent = {
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            Log.d("CreateAccount", "Account Created: ${it.result}")
+                            content()
+                        } else {
+                            Log.d("CreateAccount", "createAccount: ${it.result}")
+                        }
                     }
-                }
+            })
+            _loading.value = false
         }
-
+    }
 }

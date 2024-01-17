@@ -4,15 +4,19 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -35,39 +39,66 @@ import com.example.bookreading.widgt.SubmitButton
 fun ReaderLoginScreen(
     navController: NavHostController = NavHostController(context = LocalContext.current),
     viewModel: LoginViewModel = hiltViewModel()) {
-    Column(Modifier,
-        horizontalAlignment = Alignment.CenterHorizontally){
-        ReaderLogo()
-        UserForm(
-            loading = false, isCreatedAccount = true,
-            alreadyExist = false,
-            passwordError = false,
-            emailError = false, showError = false ) { email, pass, _ ->
-                viewModel.signIn(email, pass) {
+    val loading = remember{
+        mutableStateOf(false)
+    }
+    val notExist = remember{
+        mutableStateOf(false)
+    }
+    if (!loading.value){
+        Column(
+            Modifier,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            ReaderLogo()
+            UserForm(
+                alreadyExist = notExist.value, isCreatedAccount = true,
+                passwordError = false,
+                emailError = false,
+                showError = false
+            ) { email, pass, _ ->
+                viewModel.signIn(email, pass, content = {
                     navController.navigate(ReaderScreens.Home.name)
+                }, loading = {
+                    loading.value = it
+                }) {
+                    notExist.value = true
                 }
                 Log.d("user Form", "ReaderLoginScreen: $email,$pass")
+            }
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = "New User?",
+                    Modifier.padding(top = 12.dp),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                TextButton(onClick = { navController.navigate(ReaderScreens.CreateAccount.name) }) {
+                    Text(
+                        text = "Create Account",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
-        Row (horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)){
-            Text(text = "New User?",
-                Modifier.padding(top = 12.dp),
-                style = MaterialTheme.typography.bodyLarge)
-            TextButton(onClick = {navController.navigate(ReaderScreens.CreateAccount.name)}) {
-                Text(text = "Create Account",
-                    style = MaterialTheme.typography.bodyLarge)
             }
         }
+    }
+    else {
+        Column(verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize())
+        { CircularProgressIndicator(modifier = Modifier.size(300.dp)) }
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UserForm(
-    loading: Boolean = false,
-    alreadyExist : Boolean,
+    alreadyExist: Boolean,
     isCreatedAccount: Boolean = false,
     passwordError: Boolean,
     emailError: Boolean,
@@ -145,8 +176,18 @@ fun UserForm(
                 isValid = valid
             )
         if (alreadyExist){
-            Text(text = "Account already exist,please login!",
-                modifier = Modifier.padding(top =10.dp ))
+
+            if (!isCreatedAccount){
+                Text(
+                    text = "Account already exist,please login!",
+                    modifier = Modifier.padding(top = 10.dp)
+                )
+            }
+            else{
+                Text(text = "Account does not exist, please Create Account!",
+                    modifier = Modifier.padding(top = 10.dp))
+            }
         }
+
     }
 }
