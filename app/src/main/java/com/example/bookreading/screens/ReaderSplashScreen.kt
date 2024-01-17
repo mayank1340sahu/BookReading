@@ -38,14 +38,13 @@ fun ReaderSplashScreen(navController: NavHostController) {
             animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy,stiffness =Spring.StiffnessLow ),
             )
        delay(800)
-       /*
            if (FirebaseAuth.getInstance().currentUser?.email?.isEmpty() == true) {
                navController.navigate(ReaderScreens.Login.name)
            } else {
                navController.navigate(ReaderScreens.Home.name)
            }
-       */
-        navController.navigate(ReaderScreens.Login.name)
+
+       // navController.navigate(ReaderScreens.Login.name)
     }
     Column(Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
