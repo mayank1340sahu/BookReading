@@ -73,6 +73,7 @@ fun ReaderCreateAccount(
                             viewModel.createAccount(email, pass,
                                 loading = {
                                             loading.value = it
+                                    Log.d("CreateAccount Function s", "createAccount: ${loading.value}")
                             },
                                 content = {
                                 navController.navigate(ReaderScreens.Home.name)
@@ -81,6 +82,7 @@ fun ReaderCreateAccount(
                                 emailError.value = false
                                 passwordError.value = false
                                 alreadyExist.value = true
+                                loading.value = false
                             }
                         } else {
                             confPasswordError.value = true

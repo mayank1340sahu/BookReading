@@ -45,6 +45,9 @@ fun ReaderLoginScreen(
     val notExist = remember{
         mutableStateOf(false)
     }
+    val passwordError = remember{
+        mutableStateOf(false)
+    }
     if (!loading.value){
         Column(
             Modifier,
@@ -56,14 +59,17 @@ fun ReaderLoginScreen(
                 alreadyExist = notExist.value, isCreatedAccount = true,
                 passwordError = false,
                 emailError = false,
-                showError = false
+                showError = passwordError.value
             ) { email, pass, _ ->
                 viewModel.signIn(email, pass, content = {
                     navController.navigate(ReaderScreens.Home.name)
                 }, loading = {
                     loading.value = it
+                }, passwordError = {
+                    passwordError.value = it
                 }) {
                     notExist.value = true
+                    loading.value = false
                 }
                 Log.d("user Form", "ReaderLoginScreen: $email,$pass")
             }
@@ -180,12 +186,13 @@ fun UserForm(
             if (!isCreatedAccount){
                 Text(
                     text = "Account already exist,please login!",
-                    modifier = Modifier.padding(top = 10.dp)
+                    modifier = Modifier.padding(top = 10.dp),
+                    color = Color.Red
                 )
             }
             else{
                 Text(text = "Account does not exist, please Create Account!",
-                    modifier = Modifier.padding(top = 10.dp))
+                    modifier = Modifier.padding(top = 10.dp), color = Color.Red)
             }
         }
 

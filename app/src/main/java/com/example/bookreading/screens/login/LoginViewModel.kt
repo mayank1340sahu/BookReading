@@ -40,6 +40,7 @@ class LoginViewModel : ViewModel() {
                 Log.d("check", "check: $exception")
             }
     }
+
     private fun createUser(displayName : String?){
         val userId = auth.currentUser?.uid
         val user = UserData(
@@ -50,7 +51,7 @@ class LoginViewModel : ViewModel() {
         fireStore.collection("users").add(user)
     }
 
-     val oading : LiveData<Boolean> =_loading
+     private val loading : LiveData<Boolean> =_loading
      fun createAccount(
          email: String,
          password: String,
@@ -62,7 +63,7 @@ class LoginViewModel : ViewModel() {
 
           if (_loading.value == false) {
               _loading.value = true
-              loading(oading.value!!)
+              loading(_loading.value!!)
               check(email = email.split("@")[0],content = {
                   auth.createUserWithEmailAndPassword(email, password)
                       .addOnCompleteListener {
@@ -75,15 +76,16 @@ class LoginViewModel : ViewModel() {
                               Log.d("SignIn", "signIn: ${it.result}")
                           }
                       }
-              }, elseContent = { onExist() })
-              _loading.value = false
-              loading(oading.value!!)
-              Log.d("CreateAccount Function", "createAccount: ${_loading.value}")
+              }, elseContent = { onExist()
+                  Log.d("CreateAccount Function", "createAccount: ${_loading.value}")
+              })
+
           }
        }
      }
     fun signIn(email: String,
                password: String,
+               passwordError: (Boolean) ->Unit,
                loading : (bool : Boolean) -> Unit,
                content: () -> Unit,
                onExist: () -> Unit) {
@@ -98,11 +100,11 @@ class LoginViewModel : ViewModel() {
                             Log.d("CreateAccount", "Account Created: ${it.result}")
                             content()
                         } else {
-                            Log.d("CreateAccount", "createAccount: ${it.result}")
+                            Log.d("CreateAccount", "createAccount: ${it.exception}")
+                            passwordError(true)
                         }
                     }
             })
-            _loading.value = false
         }
     }
 }
