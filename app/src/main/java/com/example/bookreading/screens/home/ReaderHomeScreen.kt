@@ -5,8 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -22,9 +25,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -47,17 +52,21 @@ fun ReaderHomeScreen(navController: NavHostController,
 @Composable
 fun MainContent() {
     val userName = if (FirebaseAuth.getInstance().currentUser?.email?.isNotEmpty() == true){
-        FirebaseAuth.getInstance().currentUser?.displayName } else {
+        FirebaseAuth.getInstance().currentUser?.email?.split("@")?.get(0).toString()
+    } else {
         "N/A"
     }
-    Column {
-      Row(horizontalArrangement = Arrangement.SpaceBetween) {
+    Column (){
+      Row(horizontalArrangement = Arrangement.SpaceBetween,
+          modifier = Modifier.fillMaxWidth()
+              .padding(7.dp)
+              .height(300.dp)) {
           Text(text = "Your reading \nActivity right now...")
-          Column {
-              Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "user")
-              if (userName != null) {
-                  Text(text =userName )
-              }
+          Column (Modifier.size(80.dp),
+              horizontalAlignment = Alignment.CenterHorizontally){
+              Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "user",
+                  Modifier.size(30.dp))
+              Text(text =userName, overflow = TextOverflow.Clip)
           }
       }
   }
