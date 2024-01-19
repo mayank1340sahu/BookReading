@@ -35,10 +35,11 @@ fun ReaderSplashScreen(navController: NavHostController) {
     }
     LaunchedEffect(key1 = true){
         scale.animateTo(targetValue = 0.9f,
-            animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy,stiffness =Spring.StiffnessLow ),
+            animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness =Spring.StiffnessLow ),
             )
        delay(800)
-           if (FirebaseAuth.getInstance().currentUser?.email?.isEmpty() == true) {
+           if (FirebaseAuth.getInstance().currentUser?.email?.isNullOrEmpty() == true) {
                navController.navigate(ReaderScreens.Login.name)
            } else {
                navController.navigate(ReaderScreens.Home.name)
@@ -54,7 +55,7 @@ fun ReaderSplashScreen(navController: NavHostController) {
                 .scale(scale.value)
                 .clip(CircleShape)
                 .size(300.dp)
-                .border(3.dp, Color.Red, shape = CircleShape)
+                .border(3.dp, Color.Blue, shape = CircleShape)
         ) {
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -72,6 +73,6 @@ fun ReaderLogo() {
     Text(
         text = "Book Reading",
         style = MaterialTheme.typography.headlineMedium,
-        color = Color(0xFFD62E67)
+        color = Color.Blue
     )
 }

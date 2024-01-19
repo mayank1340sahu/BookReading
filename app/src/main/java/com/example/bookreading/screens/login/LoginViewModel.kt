@@ -107,4 +107,7 @@ class LoginViewModel : ViewModel() {
             })
         }
     }
+    fun userSignOut(){
+         auth.signOut().apply { Log.d("Signed Out", "userSignOut: ") }
+    }
 }
