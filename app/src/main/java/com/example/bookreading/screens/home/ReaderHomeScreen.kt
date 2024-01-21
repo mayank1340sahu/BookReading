@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -29,12 +28,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.bookreading.R
 import com.example.bookreading.navigation.ReaderScreens
+import com.example.bookreading.screens.home.widgt.ListCard
 import com.example.bookreading.screens.login.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -56,19 +58,24 @@ fun MainContent() {
     } else {
         "N/A"
     }
-    Column (){
+    Column(horizontalAlignment = Alignment.Start) {
       Row(horizontalArrangement = Arrangement.SpaceBetween,
-          modifier = Modifier.fillMaxWidth()
+          modifier = Modifier
+              .fillMaxWidth()
               .padding(7.dp)
-              .height(300.dp)) {
-          Text(text = "Your reading \nActivity right now...")
+              .height(80.dp),
+          verticalAlignment = Alignment.CenterVertically) {
+          Text(text = "Your reading \nActivity right now...", fontSize = 20.sp)
           Column (Modifier.size(80.dp),
-              horizontalAlignment = Alignment.CenterHorizontally){
+              horizontalAlignment = Alignment.CenterHorizontally,
+              verticalArrangement = Arrangement.Center){
               Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "user",
-                  Modifier.size(30.dp))
-              Text(text =userName, overflow = TextOverflow.Clip)
+                  Modifier.size(40.dp))
+              Text(text =userName, overflow = TextOverflow.Clip, fontSize = 14.sp,
+                  textAlign = TextAlign.Center)
           }
       }
+        ListCard()
   }
 }
 

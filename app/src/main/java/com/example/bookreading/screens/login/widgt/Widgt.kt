@@ -1,4 +1,4 @@
-package com.example.bookreading.widgt
+package com.example.bookreading.screens.login.widgt
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -90,7 +90,7 @@ fun PasswordInput(
         labelId = labelId, enable = enabled,
         imeAction = imeAction,
         visualTransformation = visualTransformation,
-        trailingIcon = {PasswordVisibility(passwordVisibility = passwordVisibility)},
+        trailingIcon = { PasswordVisibility(passwordVisibility = passwordVisibility) },
         onAction = onAction)
 }
 

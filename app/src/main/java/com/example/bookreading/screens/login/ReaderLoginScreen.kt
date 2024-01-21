@@ -31,9 +31,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.bookreading.navigation.ReaderScreens
 import com.example.bookreading.screens.ReaderLogo
-import com.example.bookreading.widgt.EmailInput
-import com.example.bookreading.widgt.PasswordInput
-import com.example.bookreading.widgt.SubmitButton
+import com.example.bookreading.screens.login.widgt.EmailInput
+import com.example.bookreading.screens.login.widgt.PasswordInput
+import com.example.bookreading.screens.login.widgt.SubmitButton
 
 @Preview
 @Composable
