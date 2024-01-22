@@ -2,14 +2,20 @@ package com.example.bookreading.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
@@ -35,8 +41,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.bookreading.R
+import com.example.bookreading.data.MBook
 import com.example.bookreading.navigation.ReaderScreens
 import com.example.bookreading.screens.home.widgt.ListCard
+import com.example.bookreading.screens.home.widgt.ReadingList
 import com.example.bookreading.screens.login.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -44,8 +52,12 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun ReaderHomeScreen(navController: NavHostController,
                      viewModel: LoginViewModel = hiltViewModel()) {
+    val scrollState = rememberScrollState()
+
    Scaffold (topBar = { ReaderTopBar(viewModel,navController)},floatingActionButton = {FAB()}){
-       Column(Modifier.padding(it)) {
+       Column(Modifier.padding(it).
+       fillMaxSize()
+           .verticalScroll(scrollState)) {
     MainContent()
             }
        }
@@ -53,6 +65,28 @@ fun ReaderHomeScreen(navController: NavHostController,
 
 @Composable
 fun MainContent() {
+    val onePiece = "https://www.bing.com/th?id=OIP.jMfANDS0wBX5OguqpK7MrAHaKR&w=150&h=208&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
+    val naruto = "https://th.bing.com/th/id/OIP.EjIl-g-wSybkVtNApisWMwHaLH?rs=1&pid=ImgDetMain"
+    val berserk = "https://th.bing.com/th/id/OIP.T-OD2pGl9-W6uLnY0D_jKQHaKe?rs=1&pid=ImgDetMain"
+    val  vinland = "https://th.bing.com/th/id/OIP.oot8TxRDQtGdbkNHi3E-pwHaKb?rs=1&pid=ImgDetMain"
+    val haikyuu = "https://th.bing.com/th/id/OIP.uTpLPml-BwKfT6EV1RtZsQHaK9?rs=1&pid=ImgDetMain"
+    val deathNote = "https://th.bing.com/th/id/OIP.ugzcbjSxJc5XeUUDXYkH1wHaK5?rs=1&pid=ImgDetMain"
+    val aot = "https://th.bing.com/th/id/OIP.TfR7XD-Y6UZDt-uLfGzu0AHaKe?rs=1&pid=ImgDetMain"
+    val listOfMBook = listOf(MBook("234","One piece", author = "ichiro oda",
+        notes = "i am going to be king of the pirates",onePiece),
+        MBook("234","Naruto", author = "Kisimoto",
+            notes = "dattebayo",naruto),
+        MBook("234","Berserk", author = "Kentaro Miura",
+            notes = "i want to be happy",berserk),
+        MBook("234","Vinland saga", author = "Makoto Yukimura",
+            notes = "i have no enemies",vinland),
+        MBook("234","Haikyuu!", author = "Haruichi Furudate",
+            notes = "hunger is necessary for growth",haikyuu),
+        MBook("234","Death Note", author = "Tsugumi Ohba",
+            notes = "bokuva kira da",deathNote),
+        MBook("234","Attack on titan", author = "Hajime Isayama",
+            notes = "tatakaye",aot),
+        )
     val userName = if (FirebaseAuth.getInstance().currentUser?.email?.isNotEmpty() == true){
         FirebaseAuth.getInstance().currentUser?.email?.split("@")?.get(0).toString()
     } else {
@@ -76,8 +110,18 @@ fun MainContent() {
           }
       }
         ListCard()
+        Row(horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(7.dp)
+                .height(80.dp),
+            verticalAlignment = Alignment.CenterVertically) {
+            Text(text = "Reading List", fontSize = 20.sp)
+        }
+        ReadingList(listOfMBook)
   }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

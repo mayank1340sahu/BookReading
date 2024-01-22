@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
@@ -39,7 +41,9 @@ import com.example.bookreading.data.MBook
 @Composable
 fun ListCard(
     book: MBook = MBook("dkd","one piece","Ichiro oda",
-    "A kid want to become king of the pirates"),
+    "A kid want to become king of the pirates",
+        "https://www.bing.com/th?id=OIP.jMfANDS0wBX5OguqpK7MrAHaKR&w=150&h=208&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
+    ),
     onPressDetail:(String) -> Unit = {},
     rating: Double = 4.5) {
     val context = LocalContext.current
@@ -58,13 +62,16 @@ fun ListCard(
             .width(202.dp)
             .clickable { onPressDetail(book.title.toString()) }
     ){
-        Column(modifier = Modifier.width(actualWidth)
+        Column(modifier = Modifier
+            .width(actualWidth)
             .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween){
-            Row (  Modifier
-                .height(100.dp).fillMaxWidth(), horizontalArrangement = Arrangement.Start){
+            Row (
+                Modifier
+                    .height(100.dp)
+                    .fillMaxWidth(), horizontalArrangement = Arrangement.Start){
                 Image(
-                    painter = rememberImagePainter(data = "https://www.bing.com/th?id=OIP.jMfANDS0wBX5OguqpK7MrAHaKR&w=150&h=208&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"),
+                    painter = rememberImagePainter(data = book.imageUrl),
                     contentDescription = "",
                     modifier = Modifier.fillMaxWidth(.8f)
                 )
@@ -78,7 +85,6 @@ fun ListCard(
                         Text(
                             text = "$rating",
                             fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }
@@ -88,9 +94,9 @@ fun ListCard(
                 Modifier
                     .fillMaxWidth()
                     .padding(4.dp)
-                    .height(45.dp),
+                    .height(50.dp),
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.SpaceBetween){
+                verticalArrangement = Arrangement.Top){
                 Text(text = book.title.toString(), fontWeight = FontWeight.Bold,
                     fontSize = 20.sp)
                 Text(text = book.author.toString(), fontSize = 16.sp)
@@ -111,11 +117,20 @@ fun ReadingButton(round : Dp = 29.dp) {
     Surface(shape = RoundedCornerShape(topStart = round, bottomEnd = round),
         modifier = Modifier
             .width(100.dp)
-            .height(50.dp),
+            .height(46.dp),
         color = MaterialTheme.colorScheme.primary,
     ) {
       Column(verticalArrangement = Arrangement.Center,
           horizontalAlignment = Alignment.CenterHorizontally,
           modifier = Modifier.fillMaxSize())  { Text(text = "Reading") }
+    }
+}
+
+@Composable
+fun ReadingList(list: List<MBook>) {
+    LazyRow {
+       items(list){
+           ListCard(book = it)
+       }
     }
 }
