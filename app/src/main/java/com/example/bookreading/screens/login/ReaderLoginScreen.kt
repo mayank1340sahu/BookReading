@@ -67,6 +67,7 @@ fun ReaderLoginScreen(
                     loading.value = it
                 }, passwordError = {
                     passwordError.value = it
+                   loading.value = false
                 }) {
                     notExist.value = true
                     loading.value = false
@@ -105,7 +106,7 @@ fun ReaderLoginScreen(
 @Composable
 fun UserForm(
     alreadyExist: Boolean,
-    isCreatedAccount: Boolean = false,
+    isCreatedAccount: Boolean ,
     passwordError: Boolean,
     emailError: Boolean,
     showError: Boolean,
@@ -130,7 +131,7 @@ fun UserForm(
     val keyBoardController = LocalSoftwareKeyboardController.current
 
     val valid = if (!isCreatedAccount){
-        rememberSaveable(email.value, password.value, confPassword.value) {
+        remember(email.value, password.value, confPassword.value) {
             email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty() &&
                     confPassword.value.trim().isNotEmpty()
         }
@@ -171,9 +172,13 @@ fun UserForm(
                     keyBoardController?.hide()
                 }
             )
-            if (showError)
-            { Text(text = "password didn't match", color = Color.Red) }
-
+        }
+        Log.d("UserForm password in login", "UserForm: $showError")
+        if (showError) {
+            if (!isCreatedAccount){ Text(text = "Password didn't match", color = Color.Red) }
+            else{
+                Text(text = "Incorrect Password")
+            }
         }
             SubmitButton(
                 onClick = { onDone(email.value.trim(), password.value.trim(),

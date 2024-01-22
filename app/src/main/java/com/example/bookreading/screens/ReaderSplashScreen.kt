@@ -39,7 +39,7 @@ fun ReaderSplashScreen(navController: NavHostController) {
                 stiffness =Spring.StiffnessLow ),
             )
        delay(800)
-           if (FirebaseAuth.getInstance().currentUser?.email?.isNullOrEmpty() == true) {
+           if (FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
                navController.navigate(ReaderScreens.Login.name)
            } else {
                navController.navigate(ReaderScreens.Home.name)
