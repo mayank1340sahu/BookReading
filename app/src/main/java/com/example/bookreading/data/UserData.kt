@@ -6,7 +6,7 @@ data class UserData(
     var avatarUrl: String,
     var quote: String,
     var profession: String,
-    var id: Int?
+    var id: Any?
 ) {
     fun toMap(): MutableMap<String, Any> {
         return mutableMapOf(

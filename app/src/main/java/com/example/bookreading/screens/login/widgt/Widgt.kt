@@ -51,7 +51,7 @@ fun InputField(
     enable : Boolean,
     isSingleLine : Boolean = true,
     keyboardType: KeyboardType = KeyboardType.Text,
-    imeAction : ImeAction,
+    imeAction : ImeAction = ImeAction.Done,
     onAction: KeyboardActions = KeyboardActions.Default,
     visualTransformation : VisualTransformation = VisualTransformation.None,
     trailingIcon :@Composable ()->Unit = {}

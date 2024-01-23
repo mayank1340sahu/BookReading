@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bookreading.R
 import com.example.bookreading.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -19,9 +20,9 @@ class LoginViewModel : ViewModel() {
 
     private val fireStore = FirebaseFirestore.getInstance()
 
-    private val collectionRef = fireStore.collection("users")
+     val collectionRef = fireStore.collection("users")
 
-   private fun check(email: String, content : () -> Unit, elseContent: () -> Unit) {
+   fun check(email: String, content : () -> Unit, elseContent: () -> Unit) {
        Log.d("check function", "check: $email")
         collectionRef.whereEqualTo("display_name",email).get()
             .addOnSuccessListener { documents ->
@@ -46,7 +47,7 @@ class LoginViewModel : ViewModel() {
         val user = UserData(
             userId = userId.toString(),
             display = displayName.toString(),
-            avatarUrl = "", quote = "quote",
+            avatarUrl = "https://firebasestorage.googleapis.com/v0/b/book-reader-91a18.appspot.com/o/MONK%20DEVELOPERS.png?alt=media&token=bf1910d0-385a-42d4-a3ae-8984670761b6", quote = "quote",
             id = null, profession = "Android Developer").toMap()
         fireStore.collection("users").add(user)
     }
