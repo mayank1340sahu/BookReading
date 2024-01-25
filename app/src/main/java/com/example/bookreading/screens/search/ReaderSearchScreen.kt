@@ -1,11 +1,14 @@
 package com.example.bookreading.screens.search
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -31,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.example.bookreading.R
 import com.example.bookreading.data.MBook
 import com.example.bookreading.screens.home.ReaderTopBar
 import com.example.bookreading.screens.login.LoginViewModel
@@ -84,16 +89,21 @@ fun ReaderSearchScreen(
        }
         },
     ){
-        SearchInput{
+        Column{
+            SearchInput(modifier = Modifier.heightIn(50.dp), paddingValues = it) {
 
+            }
+            Spacer(modifier = Modifier.height(3.dp))
+            BookList(bookList)
         }
-        BookList(it,bookList)
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchInput(
+    modifier: Modifier = Modifier,
+    paddingValues: PaddingValues,
     onSearch : (String) -> Unit
 ) {
     val value = rememberSaveable{
@@ -113,7 +123,7 @@ fun SearchInput(
                 onSearch(value.value.trim())
                 value.value = ""
             }
-        }
+        }, modifier = modifier.padding(paddingValues)
     ) {
         
     }
@@ -125,7 +135,7 @@ fun BookRow(mBook: MBook =MBook("234","One piece", author = "ichiro oda",
     notes = "i am going to be king of the pirates",
     "https://www.bing.com/th?id=OIP.jMfANDS0wBX5OguqpK7MrAHaKR&w=150&h=208&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2")) {
    Card(shape = RectangleShape,
-       elevation = CardDefaults.elevatedCardElevation(7.dp),
+       elevation = CardDefaults.elevatedCardElevation(5.dp),
        colors = CardDefaults.cardColors(containerColor = Color.White,
            contentColor = Color.Black),
        modifier = Modifier
@@ -133,9 +143,12 @@ fun BookRow(mBook: MBook =MBook("234","One piece", author = "ichiro oda",
            .padding(5.dp)
            .heightIn(100.dp)) {
        Row(Modifier.fillMaxWidth()) {
+           Log.d("SearchScreen", "BookRow: ${mBook.imageUrl}")
            Image(painter = rememberImagePainter(data = mBook.imageUrl),
-               contentDescription = "book", modifier = Modifier.width(70.dp)
-                   .fillMaxHeight())
+               contentDescription = "book", modifier = Modifier
+                   .width(70.dp)
+                   .height(100.dp)
+                   .padding(2.dp))
            Column {
                Text(text = mBook.title.toString(),
                    fontSize = 20.sp)
@@ -145,7 +158,7 @@ fun BookRow(mBook: MBook =MBook("234","One piece", author = "ichiro oda",
                Text(text = "Date: 23/01/2024",
                    fontStyle = FontStyle.Italic,
                    fontSize = 16.sp)
-               Text(text = "[Computers]",
+               Text(text = "[Manga]",
                    fontStyle = FontStyle.Italic,
                    fontSize = 16.sp)
            }
@@ -154,8 +167,8 @@ fun BookRow(mBook: MBook =MBook("234","One piece", author = "ichiro oda",
 }
 
 @Composable
-fun BookList(paddingValues: PaddingValues, bookList: List<MBook>) {
-    LazyColumn(modifier = Modifier.padding(paddingValues),content = {
+fun BookList( bookList: List<MBook>) {
+    LazyColumn(modifier = Modifier.padding(6.dp),content = {
         items(bookList) {
             BookRow(it)
         }
