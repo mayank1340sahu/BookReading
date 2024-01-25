@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -34,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,17 +40,19 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
-import com.example.bookreading.R
 import com.example.bookreading.data.MBook
 import com.example.bookreading.screens.home.ReaderTopBar
 import com.example.bookreading.screens.login.LoginViewModel
 import com.example.bookreading.screens.login.widgt.InputField
+import com.example.bookreading.viewModel.BookViewModel
+import kotlin.math.log
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReaderSearchScreen(
     navController: NavHostController = NavHostController((LocalContext.current)),
     viewModel: LoginViewModel = hiltViewModel(),
+    bookViewModel: BookViewModel = hiltViewModel(),
 ) {
     val onePiece = "https://www.bing.com/th?id=OIP.jMfANDS0wBX5OguqpK7MrAHaKR&w=150&h=208&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
     val naruto = "https://th.bing.com/th/id/OIP.EjIl-g-wSybkVtNApisWMwHaLH?rs=1&pid=ImgDetMain"
@@ -90,8 +90,11 @@ fun ReaderSearchScreen(
         },
     ){
         Column{
-            SearchInput(modifier = Modifier.heightIn(50.dp), paddingValues = it) {
-
+            SearchInput(
+                modifier = Modifier.heightIn(50.dp),
+                bookViewModel,
+                paddingValues = it) {
+                bookViewModel.searchBook(it)
             }
             Spacer(modifier = Modifier.height(3.dp))
             BookList(bookList)
@@ -103,26 +106,25 @@ fun ReaderSearchScreen(
 @Composable
 fun SearchInput(
     modifier: Modifier = Modifier,
+    viewModel: BookViewModel,
     paddingValues: PaddingValues,
-    onSearch : (String) -> Unit
+    onSearch: (String) -> Unit
 ) {
     val value = rememberSaveable{
         mutableStateOf("")
     }
-    val valid = remember {
+    val valid = remember(value.value) {
        value.value.trim().isNotEmpty()
     }
     val keyboardController = LocalSoftwareKeyboardController.current
     InputField(valueState = value, labelId ="Books" , enable = true,
         onAction = KeyboardActions{
-            if (!valid){
-                return@KeyboardActions
-            }
-            else{
-                keyboardController?.hide()
-                onSearch(value.value.trim())
-                value.value = ""
-            }
+            Log.d("onAction", "SearchInput: action")
+            if (!valid) return@KeyboardActions
+            onSearch(value.value.trim())
+            Log.d("onSearch", "SearchInput: ${value.value}")
+            value.value = ""
+            keyboardController?.hide()
         }, modifier = modifier.padding(paddingValues)
     ) {
         
