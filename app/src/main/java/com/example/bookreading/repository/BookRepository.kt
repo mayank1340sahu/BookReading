@@ -11,14 +11,16 @@ class BookRepository @Inject constructor(private val bookApi: BookApi) {
     private val dataOrException = DataOrException<List<Item>,Boolean,Exception>()
     private val bookdataOrException = DataOrException<Item,Boolean,Exception>()
     suspend fun getAllBooks(query: String):DataOrException<List<Item>,Boolean,Exception> {
-       try {
-           dataOrException.loading = true
+        try {
+            dataOrException.loading = true
            dataOrException.data = bookApi.getAllBooks(query).items
-           if (dataOrException.data!!.isNotEmpty()) dataOrException.loading = false
+            if (dataOrException.data.toString().isNotEmpty()){
+                dataOrException.loading = false }
        }
        catch (e:Exception){
            dataOrException.exception = e
        }
+        Log.d("Repository", "getAllBooks: $dataOrException")
         return dataOrException
     }
     suspend fun getBookInfo(bookId : String) :DataOrException<Item,Boolean,Exception>{
@@ -30,6 +32,7 @@ class BookRepository @Inject constructor(private val bookApi: BookApi) {
        }catch (e:Exception){
            bookdataOrException.exception = e
        }
+        Log.d("Repository", "getBookInfo: $dataOrException")
         return bookdataOrException
     }
 }

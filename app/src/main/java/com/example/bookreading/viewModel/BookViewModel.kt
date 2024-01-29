@@ -13,22 +13,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BookViewModel @Inject constructor(val repo : BookRepository):ViewModel() {
-private val listOfBooks :MutableState<DataOrException<List<Item>,Boolean,Exception>>
-    = mutableStateOf(DataOrException(null,true,java.lang.Exception("")))
-     init {
-         searchBook("one piece")
-     }
+class BookViewModel @Inject constructor(private val repo : BookRepository):ViewModel() {
+    val listOfBooks : MutableState<DataOrException<List<Item>, Boolean, Exception>>
+            = mutableStateOf(DataOrException(null,true,java.lang.Exception("")))
+    init {
+        Log.d("viewModelInit", "listofBooks:$listOfBooks ")
+        searchBook("one piece")
+    }
 
- fun searchBook(query: String) {
+   fun searchBook(query: String) {
         viewModelScope.launch {
             try{
-                listOfBooks.value.loading = true
                 listOfBooks.value.data = repo.getAllBooks(query).data
                 Log.d("SearchViewModel", "searchBook: ${listOfBooks.value.data.toString()}")
-                if (listOfBooks.value.data!!.toString().isNotEmpty())
-
-                    listOfBooks.value.loading = false
             }
             catch (e:Exception){
                 listOfBooks.value.exception = e

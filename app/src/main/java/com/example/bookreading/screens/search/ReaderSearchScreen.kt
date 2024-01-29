@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -40,12 +43,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.example.bookreading.apiData.Item
 import com.example.bookreading.data.MBook
+import com.example.bookreading.repository.DataOrException
 import com.example.bookreading.screens.home.ReaderTopBar
 import com.example.bookreading.screens.login.LoginViewModel
 import com.example.bookreading.screens.login.widgt.InputField
 import com.example.bookreading.viewModel.BookViewModel
-import kotlin.math.log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,14 +60,24 @@ fun ReaderSearchScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     bookViewModel: BookViewModel = hiltViewModel(),
 ) {
-    val onePiece = "https://www.bing.com/th?id=OIP.jMfANDS0wBX5OguqpK7MrAHaKR&w=150&h=208&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
+   /* val onePiece = "https://www.bing.com/th?id=OIP.jMfANDS0wBX5OguqpK7MrAHaKR&w=150&h=208&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
     val naruto = "https://th.bing.com/th/id/OIP.EjIl-g-wSybkVtNApisWMwHaLH?rs=1&pid=ImgDetMain"
     val berserk = "https://th.bing.com/th/id/OIP.T-OD2pGl9-W6uLnY0D_jKQHaKe?rs=1&pid=ImgDetMain"
     val  vinland = "https://th.bing.com/th/id/OIP.oot8TxRDQtGdbkNHi3E-pwHaKb?rs=1&pid=ImgDetMain"
     val haikyuu = "https://th.bing.com/th/id/OIP.uTpLPml-BwKfT6EV1RtZsQHaK9?rs=1&pid=ImgDetMain"
     val deathNote = "https://th.bing.com/th/id/OIP.ugzcbjSxJc5XeUUDXYkH1wHaK5?rs=1&pid=ImgDetMain"
-    val aot = "https://th.bing.com/th/id/OIP.TfR7XD-Y6UZDt-uLfGzu0AHaKe?rs=1&pid=ImgDetMain"
-   val bookList = listOf(
+    val aot = "https://th.bing.com/th/id/OIP.TfR7XD-Y6UZDt-uLfGzu0AHaKe?rs=1&pid=ImgDetMain*/
+
+    Log.d("bookList", "ReaderSearchScreen: ${bookViewModel.listOfBooks}")
+
+val bookList =   produceState<DataOrException<List<Item>, Boolean, Exception>>(
+    initialValue = DataOrException(
+    )
+)
+{
+    value = bookViewModel.listOfBooks.value
+}.value
+       /*listOf(
         MBook("234","One piece", author = "ichiro oda",
             notes = "i am going to be king of the pirates",onePiece),
         MBook("234","Naruto", author = "Kisimoto",
@@ -76,7 +92,7 @@ fun ReaderSearchScreen(
             notes = "bokuva kira da",deathNote),
         MBook("234","Attack on titan", author = "Hajime Isayama",
             notes = "tatakaye",aot),
-    )
+    )*/
     Scaffold (
         topBar = {
        ReaderTopBar(viewModel,navController,
@@ -95,12 +111,24 @@ fun ReaderSearchScreen(
                 bookViewModel,
                 paddingValues = it) {
                 bookViewModel.searchBook(it)
+                Log.d("SearchInput", "ReaderSearchScreen: ${bookViewModel.searchBook(it)}")
             }
             Spacer(modifier = Modifier.height(3.dp))
-            BookList(bookList)
+
+            if (bookList.loading ==false){
+                if (bookList.data != null) {
+                    BookList(bookList.data!!)
+                }
+                else {
+                    Log.d("Error", "ReaderSearchScreen: ${bookList.exception}")
+                }
+            }
+            else{
+                CircularProgressIndicator(modifier = Modifier.size(300.dp))
+            }
+            }
         }
     }
-}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -131,11 +159,12 @@ fun SearchInput(
     }
 }
 
-@Preview
 @Composable
-fun BookRow(mBook: MBook =MBook("234","One piece", author = "ichiro oda",
+fun BookRow(
+    mBook: Item
+    /*MBook("234","One piece", author = "ichiro oda",
     notes = "i am going to be king of the pirates",
-    "https://www.bing.com/th?id=OIP.jMfANDS0wBX5OguqpK7MrAHaKR&w=150&h=208&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2")) {
+    "https://www.bing.com/th?id=OIP.jMfANDS0wBX5OguqpK7MrAHaKR&w=150&h=208&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2")*/) {
    Card(shape = RectangleShape,
        elevation = CardDefaults.elevatedCardElevation(5.dp),
        colors = CardDefaults.cardColors(containerColor = Color.White,
@@ -145,16 +174,16 @@ fun BookRow(mBook: MBook =MBook("234","One piece", author = "ichiro oda",
            .padding(5.dp)
            .heightIn(100.dp)) {
        Row(Modifier.fillMaxWidth()) {
-           Log.d("SearchScreen", "BookRow: ${mBook.imageUrl}")
-           Image(painter = rememberImagePainter(data = mBook.imageUrl),
+           Log.d("SearchScreen", "BookRow: ${mBook.volumeInfo.title}")
+          """ Image(painter = rememberImagePainter(data = mBook.volumeInfo.imageLinks.thumbnail),
                contentDescription = "book", modifier = Modifier
                    .width(70.dp)
                    .height(100.dp)
-                   .padding(2.dp))
+                   .padding(2.dp))"""
            Column {
-               Text(text = mBook.title.toString(),
+               Text(text = mBook.volumeInfo.title,
                    fontSize = 20.sp)
-               Text(text = mBook.author.toString(),
+               Text(text = mBook.volumeInfo.authors[0],
                    fontStyle = FontStyle.Italic,
                    fontSize = 16.sp)
                Text(text = "Date: 23/01/2024",
@@ -169,10 +198,10 @@ fun BookRow(mBook: MBook =MBook("234","One piece", author = "ichiro oda",
 }
 
 @Composable
-fun BookList( bookList: List<MBook>) {
-    LazyColumn(modifier = Modifier.padding(6.dp),content = {
+fun BookList( bookList: List<Item>) {
+    LazyColumn(modifier = Modifier.padding(6.dp)) {
         items(bookList) {
             BookRow(it)
         }
-    })
+    }
 }

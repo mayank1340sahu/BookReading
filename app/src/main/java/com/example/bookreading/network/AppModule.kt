@@ -2,6 +2,7 @@ package com.example.bookreading.network
 
 
 import com.example.bookreading.repository.BookRepository
+import com.example.bookreading.repository.RepositoryRemake
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,6 +18,9 @@ object AppModule {
     @Singleton
     @Provides
     fun bookRepo(bookApi: BookApi) = BookRepository(bookApi)
+ @Singleton
+    @Provides
+    fun bookRepoRemake(bookApi: BookApi) = RepositoryRemake(bookApi)
 
     @Singleton
     @Provides
