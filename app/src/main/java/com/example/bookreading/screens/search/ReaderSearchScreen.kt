@@ -1,6 +1,7 @@
 package com.example.bookreading.screens.search
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
@@ -38,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 import com.example.bookreading.apiData.Item
 import com.example.bookreading.screens.home.ReaderTopBar
 import com.example.bookreading.screens.login.LoginViewModel
@@ -100,8 +103,6 @@ var bookList =  searchViewModel.list
                 Log.d("SearchInput", "ReaderSearchScreen: ${searchViewModel.searchBook(it)}")
             }
             Spacer(modifier = Modifier.height(3.dp))
-
-
                     BookList(bookList)
                 }
             }
@@ -153,11 +154,15 @@ fun BookRow(
            .heightIn(100.dp)) {
        Row(Modifier.fillMaxWidth()) {
            Log.d("SearchScreen", "BookRow: ${mBook.volumeInfo.title}")
-          """ Image(painter = rememberImagePainter(data = mBook.volumeInfo.imageLinks.thumbnail),
-               contentDescription = "book", modifier = Modifier
-                   .width(70.dp)
-                   .height(100.dp)
-                   .padding(2.dp))"""
+           if (mBook.volumeInfo.imageLinks.thumbnail.isNotEmpty()){
+               Image(
+                   painter = rememberImagePainter(data = mBook.volumeInfo.imageLinks.thumbnail),
+                   contentDescription = "book", modifier = Modifier
+                       .width(70.dp)
+                       .height(100.dp)
+                       .padding(2.dp)
+               )
+           }
            Column {
                Text(text = mBook.volumeInfo.title,
                    fontSize = 20.sp)
