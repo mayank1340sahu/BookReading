@@ -70,13 +70,8 @@ fun ReaderSearchScreen(
 
     Log.d("bookList", "ReaderSearchScreen: ${bookViewModel.listOfBooks}")
 
-val bookList =   produceState<DataOrException<List<Item>, Boolean, Exception>>(
-    initialValue = DataOrException(
-    )
-)
-{
-    value = bookViewModel.listOfBooks.value
-}.value
+var bookList =  bookViewModel.listOfBooks.value
+
        /*listOf(
         MBook("234","One piece", author = "ichiro oda",
             notes = "i am going to be king of the pirates",onePiece),
@@ -112,6 +107,7 @@ val bookList =   produceState<DataOrException<List<Item>, Boolean, Exception>>(
                 paddingValues = it) {
                 bookViewModel.searchBook(it)
                 Log.d("SearchInput", "ReaderSearchScreen: ${bookViewModel.searchBook(it)}")
+                bookList = bookViewModel.listOfBooks.value
             }
             Spacer(modifier = Modifier.height(3.dp))
 

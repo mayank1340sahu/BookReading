@@ -24,7 +24,7 @@ class BookViewModel @Inject constructor(private val repo : BookRepository):ViewM
    fun searchBook(query: String) {
         viewModelScope.launch {
             try{
-                listOfBooks.value.data = repo.getAllBooks(query).data
+                listOfBooks.value = repo.getAllBooks(query)
                 Log.d("SearchViewModel", "searchBook: ${listOfBooks.value.data.toString()}")
             }
             catch (e:Exception){
