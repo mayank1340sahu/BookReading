@@ -1,7 +1,6 @@
 package com.example.bookreading.screens.search
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
@@ -27,7 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -37,28 +34,22 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.rememberImagePainter
 import com.example.bookreading.apiData.Item
-import com.example.bookreading.data.MBook
-import com.example.bookreading.repository.DataOrException
 import com.example.bookreading.screens.home.ReaderTopBar
 import com.example.bookreading.screens.login.LoginViewModel
 import com.example.bookreading.screens.login.widgt.InputField
-import com.example.bookreading.viewModel.BookViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
+import com.example.bookreading.viewModel.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReaderSearchScreen(
     navController: NavHostController = NavHostController((LocalContext.current)),
     viewModel: LoginViewModel = hiltViewModel(),
-    bookViewModel: BookViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel(),
 ) {
    /* val onePiece = "https://www.bing.com/th?id=OIP.jMfANDS0wBX5OguqpK7MrAHaKR&w=150&h=208&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
     val naruto = "https://th.bing.com/th/id/OIP.EjIl-g-wSybkVtNApisWMwHaLH?rs=1&pid=ImgDetMain"
@@ -68,9 +59,9 @@ fun ReaderSearchScreen(
     val deathNote = "https://th.bing.com/th/id/OIP.ugzcbjSxJc5XeUUDXYkH1wHaK5?rs=1&pid=ImgDetMain"
     val aot = "https://th.bing.com/th/id/OIP.TfR7XD-Y6UZDt-uLfGzu0AHaKe?rs=1&pid=ImgDetMain*/
 
-    Log.d("bookList", "ReaderSearchScreen: ${bookViewModel.listOfBooks}")
+    Log.d("bookList", "ReaderSearchScreen: ${searchViewModel.list}")
 
-var bookList =  bookViewModel.listOfBooks.value
+var bookList =  searchViewModel.list
 
        /*listOf(
         MBook("234","One piece", author = "ichiro oda",
@@ -103,34 +94,25 @@ var bookList =  bookViewModel.listOfBooks.value
         Column{
             SearchInput(
                 modifier = Modifier.heightIn(50.dp),
-                bookViewModel,
+                searchViewModel,
                 paddingValues = it) {
-                bookViewModel.searchBook(it)
-                Log.d("SearchInput", "ReaderSearchScreen: ${bookViewModel.searchBook(it)}")
-                bookList = bookViewModel.listOfBooks.value
+
+                Log.d("SearchInput", "ReaderSearchScreen: ${searchViewModel.searchBook(it)}")
             }
             Spacer(modifier = Modifier.height(3.dp))
 
-            if (bookList.loading ==false){
-                if (bookList.data != null) {
-                    BookList(bookList.data!!)
+
+                    BookList(bookList)
                 }
-                else {
-                    Log.d("Error", "ReaderSearchScreen: ${bookList.exception}")
-                }
-            }
-            else{
-                CircularProgressIndicator(modifier = Modifier.size(300.dp))
-            }
             }
         }
-    }
+
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchInput(
     modifier: Modifier = Modifier,
-    viewModel: BookViewModel,
+    viewModel: SearchViewModel,
     paddingValues: PaddingValues,
     onSearch: (String) -> Unit
 ) {

@@ -2,6 +2,7 @@ package com.example.bookreading.network
 
 
 import com.example.bookreading.repository.BookRepository
+import com.example.bookreading.repository.BookRepository2
 import com.example.bookreading.repository.RepositoryRemake
 import dagger.Module
 import dagger.Provides
@@ -17,7 +18,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun bookRepo(bookApi: BookApi) = BookRepository(bookApi)
+    fun bookRepo(bookApi: BookApi) = BookRepository2(bookApi)
  @Singleton
     @Provides
     fun bookRepoRemake(bookApi: BookApi) = RepositoryRemake(bookApi)

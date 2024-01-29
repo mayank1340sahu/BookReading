@@ -1,6 +1,6 @@
 package com.example.bookreading.apiData
 
 data class ListPriceX(
-    val amountInMicros: Int,
+    val amountInMicros: Long,
     val currencyCode: String
 )
