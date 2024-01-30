@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(private val repo : BookRepository2): ViewModel() {
-    var list : List<com.example.bookreading.apiData.Item> by mutableStateOf(listOf())
-
+    var list : List<com.example.bookreading.apiData.Item>? by mutableStateOf(listOf())
+    var isLoading : Boolean by mutableStateOf(true)
     init {
         loadBook()
     }
@@ -27,16 +27,21 @@ class SearchViewModel @Inject constructor(private val repo : BookRepository2): V
 
     fun searchBook(query: String) {
         viewModelScope.launch(Dispatchers.Default) {
+            isLoading = true
             try {
                 when(val response = repo.getAllBooks(query)){
                     is Resources.Success ->{
                         list = response.data!!
+                        if (list!!.isNotEmpty()){
+                            isLoading = false
+                        }
                     }
                     is Resources.Error ->{
+                        isLoading = false
                         Log.d("ViewModel", "searchBook: ${response.message}")
                     }
                     else ->{
-
+                    isLoading = false
                     }
                 }
             }
