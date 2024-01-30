@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.bookreading.repository.BookRepository2
 import com.example.bookreading.repository.Resources
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

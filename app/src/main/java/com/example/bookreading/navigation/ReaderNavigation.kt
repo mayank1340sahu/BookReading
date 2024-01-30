@@ -1,9 +1,12 @@
 package com.example.bookreading.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavArgument
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.bookreading.screens.ReaderSplashScreen
 import com.example.bookreading.screens.createAccount.ReaderCreateAccount
 import com.example.bookreading.screens.detail.BookDetails
@@ -23,8 +26,11 @@ fun ReaderNavigation() {
         composable(ReaderScreens.Home.name){
             ReaderHomeScreen(navController = navController)
         }
-        composable(ReaderScreens.Detail.name){
-            BookDetails(navController = navController)
+        val mane ="${ReaderScreens.Detail.name}/{bookId}"
+        composable(mane, arguments = listOf(navArgument(name = "bookId"){type = NavType.StringType})){
+
+            BookDetails(navController = navController,
+                bookId = it.arguments?.getString("bookId").toString())
         }
         composable(ReaderScreens.Login.name){
             ReaderLoginScreen(navController = navController)

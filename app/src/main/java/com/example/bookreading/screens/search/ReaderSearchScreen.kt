@@ -46,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.bookreading.apiData.Item
+import com.example.bookreading.navigation.ReaderScreens
 import com.example.bookreading.screens.home.ReaderTopBar
 import com.example.bookreading.screens.login.LoginViewModel
 import com.example.bookreading.screens.login.widgt.InputField
@@ -117,7 +118,7 @@ fun ReaderSearchScreen(
                 }
                 else {
                     if (bookList != null) {
-                        BookList(bookList)
+                        BookList(bookList,navController)
                     } else {
                         Log.d("book list", "ReaderSearchScreen: $bookList")
                     }
@@ -158,13 +159,16 @@ fun SearchInput(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookRow(
-    mBook: Item
+    mBook: Item,
+    navController: NavHostController
     /*MBook("234","One piece", author = "ichiro oda",
     notes = "i am going to be king of the pirates",
     "https://www.bing.com/th?id=OIP.jMfANDS0wBX5OguqpK7MrAHaKR&w=150&h=208&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2")*/) {
    Card(shape = RectangleShape,
+       onClick = {navController.navigate(ReaderScreens.Detail.name+"/${mBook.id}")},
        elevation = CardDefaults.elevatedCardElevation(5.dp),
        colors = CardDefaults.cardColors(containerColor = Color.White,
            contentColor = Color.Black),
@@ -202,10 +206,10 @@ fun BookRow(
 }
 
 @Composable
-fun BookList( bookList: List<Item>) {
+fun BookList( bookList: List<Item>,navController: NavHostController) {
     LazyColumn(modifier = Modifier.padding(6.dp)) {
         items(bookList) {
-            BookRow(it)
+            BookRow(it,navController)
         }
     }
 }
