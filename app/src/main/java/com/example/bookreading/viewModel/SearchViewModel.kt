@@ -26,7 +26,7 @@ class SearchViewModel @Inject constructor(private val repo : BookRepository2): V
     }
 
     fun searchBook(query: String) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch {
             isLoading = true
             try {
                 when(val response = repo.getAllBooks(query)){
