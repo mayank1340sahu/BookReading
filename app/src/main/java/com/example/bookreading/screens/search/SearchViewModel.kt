@@ -1,4 +1,4 @@
-package com.example.bookreading.viewModel
+package com.example.bookreading.screens.search
 
 import android.util.Log
 import androidx.compose.runtime.getValue
